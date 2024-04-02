@@ -2,14 +2,27 @@ import { useState, useEffect } from "react";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import LinkIcon from "@mui/icons-material/Link";
 import DoneIcon from "@mui/icons-material/Done";
+import { useLazyGetSummaryQuery } from "../services/article";
 
 const Demo = () => {
   const [article, setArticle] = useState({
     url: "",
     summary: "",
   });
+
+  const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
+
   const handleSubmit = async (e) => {
-    alert("Submitted");
+    e.preventDefault();
+    console.log("Hello");
+    const { data } = await getSummary({ articleUrl: article.url });
+
+    if (data?.summary) {
+      const newArticle = { ...article, summary: data.summary };
+      setArticle(newArticle);
+
+      console.log(newArticle);
+    }
   };
 
   return (
