@@ -10,18 +10,31 @@ const Demo = () => {
     summary: "",
   });
 
+  const [allArticles, setAllArticles] = useState([]);
   const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
+
+  useEffect(() => {
+    const articlesFromLocalStorage = JSON.parse(
+      localStorage.getItem("articles")
+    );
+
+    if (articlesFromLocalStorage) {
+      setAllArticles(articlesFromLocalStorage);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Hello");
     const { data } = await getSummary({ articleUrl: article.url });
 
     if (data?.summary) {
       const newArticle = { ...article, summary: data.summary };
-      setArticle(newArticle);
+      const updatedAllArticles = [newArticle, ...allArticles];
 
-      console.log(newArticle);
+      setArticle(newArticle);
+      setAllArticles(updatedAllArticles);
+
+      localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
     }
   };
 
@@ -32,7 +45,7 @@ const Demo = () => {
           className="relative justify-center flex items-center"
           onSubmit={handleSubmit}
         >
-          <LinkIcon className="absolute left-0 my-2 ml-3 w-5" />
+          <LinkIcon className="absolute left-0 my-2 ml-3" />
           <input
             type="url"
             placeholder="Enter a URL"
@@ -48,6 +61,23 @@ const Demo = () => {
             ↵
           </button>
         </form>
+
+        <div className="flex flex-col gap-1 max-h-60 overflow-y-auto">
+          {allArticles.map((item, index) => (
+            <div
+              key={`link-${index}`}
+              onClick={() => setArticle(item)}
+              className="link_card"
+            >
+              <div className="copy_btn">
+                <ContentCopyIcon sx={{ fontSize: 16 }} />
+              </div>
+              <p className="flex-1 font-satoshi text-blue-400 font-medium text-sm truncate">
+                {item.url}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
