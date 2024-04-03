@@ -1,10 +1,14 @@
-import React from "react";
+import desktop_logo from "../assets/desktop_logo.png";
 
 const Hero = () => {
   return (
     <header className="w-full flex justify-center items-center flex-col">
       <nav className="flex w-full justify-between items-center mb-10 pt-3">
-        <h3>SYNOPZ</h3>
+        <img
+          src={desktop_logo}
+          alt="synopz_logo"
+          className="w-28 object-contain"
+        />
         <button
           type="button"
           onClick={() => window.open("https://github.com/ijas9118")}
